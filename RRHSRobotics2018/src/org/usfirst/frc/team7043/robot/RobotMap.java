@@ -40,4 +40,9 @@ public class RobotMap {
 	
 	public static SpeedControllerGroup rollerIntake = new SpeedControllerGroup(leftIntakeMotor,rightIntakeMotor);
 	//END Intake Motor Map
+	
+	//Start Pully System Map
+	public static Spark pullyMotor = new Spark(2);
+	
+	
 }
