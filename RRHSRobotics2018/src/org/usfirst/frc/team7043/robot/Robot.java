@@ -15,8 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team7043.robot.commands.AutoRightDriveCommand;
+import org.usfirst.frc.team7043.robot.commands.IntakePullCommand;
+import org.usfirst.frc.team7043.robot.commands.IntakeReleaseCommand;
+import org.usfirst.frc.team7043.robot.commands.LowerIntakeCommand;
+import org.usfirst.frc.team7043.robot.commands.RaiseIntakeCommand;
 import org.usfirst.frc.team7043.robot.commands.TankDriveCommand;
 import org.usfirst.frc.team7043.robot.subsystems.DriveTrainSubsystem;
+import org.usfirst.frc.team7043.robot.subsystems.IntakeSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,9 +32,12 @@ import org.usfirst.frc.team7043.robot.subsystems.DriveTrainSubsystem;
  */
 public class Robot extends TimedRobot {
 	public static final DriveTrainSubsystem DriveTrain = new DriveTrainSubsystem();
+	public static final IntakeSubsystem Intake = new IntakeSubsystem();
 	public static OI refOI = new OI();
 	public static RobotMap robotMap = new RobotMap();
 
+	
+	
 	Command driveTrainCommand = new TankDriveCommand();
 	
 	Command selectedAutonomousCommand;
@@ -44,10 +52,14 @@ public class Robot extends TimedRobot {
 		autoChooser.addDefault("Right Auto Drive", new AutoRightDriveCommand());
 		//autoChooser.addDefault("Middle Auto Drive", new AutoMiddleDriveCommand());
 		//autoChooser.addDefault("Left Auto Drive", new AutoLeftDriveCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
+		//chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", autoChooser);
 		RobotMap.leftDrive.setInverted(true);
 		RobotMap.robotDriveMain = new DifferentialDrive(RobotMap.leftDrive, RobotMap.rightDrive);
+		refOI.triggerLeft.whileHeld(new IntakePullCommand());
+		refOI.triggerRight.whileHeld(new IntakeReleaseCommand());
+		refOI.raiseIntake.whileHeld(new RaiseIntakeCommand());
+		refOI.lowerIntake.whileHeld(new LowerIntakeCommand());
 	}
 
 	/**
