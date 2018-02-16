@@ -1,17 +1,32 @@
 package org.usfirst.frc.team7043.robot.commands;
 
 import org.usfirst.frc.team7043.robot.Robot;
-
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class IntakeReleaseCommand extends Command {
-
-    public IntakeReleaseCommand() {
+public class IntakeCommand extends Command {
+	
+	private Double speed;
+	
+	//AutoMode Constructor
+    public IntakeCommand(Double timeIn, Double speedIn) {
         // Use requires() here to declare subsystem dependencies
     		requires(Robot.Intake);
+    		setTimeout(timeIn);
+    		speed = speedIn;
+    }
+    
+    //TeleMode Constructor
+    public IntakeCommand(String mode) {
+        // Use requires() here to declare subsystem dependencies
+    		requires(Robot.Intake);
+    		if(mode == "release") {
+    			speed = -1.0;
+    		} else if(mode == "pull") {
+    			speed = 0.4;
+    		}
     }
 
     // Called just before this Command runs the first time
@@ -20,16 +35,17 @@ public class IntakeReleaseCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    		Robot.Intake.activateIntake(-1.0);
+    		Robot.Intake.activateIntake(speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return isTimedOut();
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    		Robot.Intake.stopIntake();
     }
 
     // Called when another command which requires one or more of the same

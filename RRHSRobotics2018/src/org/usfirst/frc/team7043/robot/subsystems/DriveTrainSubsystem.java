@@ -1,8 +1,8 @@
 package org.usfirst.frc.team7043.robot.subsystems;
 
 import org.usfirst.frc.team7043.robot.RobotMap;
-import org.usfirst.frc.team7043.robot.commands.TankDriveCommand;
-import edu.wpi.first.wpilibj.Joystick;
+import org.usfirst.frc.team7043.robot.commands.DriveCommand;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -15,19 +15,11 @@ public class DriveTrainSubsystem extends Subsystem {
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new TankDriveCommand());
+        setDefaultCommand(new DriveCommand());
     }
     
-    public void telopDrive(Joystick joyLeft, Joystick joyRight) {
-    		RobotMap.robotDriveMain.tankDrive(-joyLeft.getY(), -joyRight.getY());
-    }
-    
-    public void autoDrive(Double speed, Double direction, Double time) {
-    		if (RobotMap.masterTimer.get() < time) {
-    			RobotMap.robotDriveMain.arcadeDrive(speed, direction); // drive forwards half speed
-		} else {
-			RobotMap.robotDriveMain.stopMotor(); // stop robot
-		}
+    public void drive(Double speed, Double rotation) {
+		RobotMap.robotDriveMain.arcadeDrive(speed, rotation); // drive forwards half speed
     }
     
     public void stop() {

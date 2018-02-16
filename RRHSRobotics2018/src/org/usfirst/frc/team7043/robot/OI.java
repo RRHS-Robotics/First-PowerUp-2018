@@ -7,7 +7,8 @@
 
 package org.usfirst.frc.team7043.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;;
 
@@ -45,13 +46,21 @@ public class OI {
 	// button.whenReleased(new ExampleCommand());
 	 */
 	
-	public Joystick joyLeft = new Joystick(0);
-	public Joystick joyRight = new Joystick(1);
+	/*public Joystick controller = new Joystick(0);
 	
-	Button triggerLeft = new JoystickButton(joyLeft, 1);
-	Button triggerRight = new JoystickButton(joyRight, 1);
-	Button lowerIntake = new JoystickButton(joyLeft, 3);
-	Button raiseIntake = new JoystickButton(joyRight, 3);
+	Button intakeForward = new JoystickButton(controller, 1);
+	Button intakeReverse = new JoystickButton(controller, 2);
+	Button lowerIntake = new JoystickButton(controller, 5);
+	Button raiseIntake = new JoystickButton(controller, 6);
+	*/
+	
+	
+	public XboxController controller = new XboxController(0);
+	
+	Button intakeForward = new JoystickButton(controller, 1);
+	Button intakeReverse = new JoystickButton(controller, 2);
+	Button lowerIntake = new JoystickButton(controller, 5);
+	Button raiseIntake = new JoystickButton(controller, 6);
 	
 	public OI() {
 		

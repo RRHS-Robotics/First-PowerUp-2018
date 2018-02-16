@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  *
  */
-public class IntakeSubsystem extends Subsystem {
+public class PullySubsystem extends Subsystem {
 
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
@@ -17,12 +17,12 @@ public class IntakeSubsystem extends Subsystem {
         //setDefaultCommand(new MySpecialCommand());
     }
     
-    public void activateIntake(double speed) {
-    		RobotMap.rollerIntake.set(speed);
+    public void activatePulley(double speed) {
+		RobotMap.pulleyMotor.set(speed);
     }
     
-    public void stopIntake() {
-		RobotMap.rollerIntake.set(0);
+    public void stopPulley() {
+		RobotMap.pulleyMotor.set(0);
 	}
 }
 

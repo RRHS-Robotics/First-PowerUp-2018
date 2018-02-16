@@ -14,14 +14,12 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team7043.robot.commands.AutoRightDriveCommand;
-import org.usfirst.frc.team7043.robot.commands.IntakePullCommand;
-import org.usfirst.frc.team7043.robot.commands.IntakeReleaseCommand;
-import org.usfirst.frc.team7043.robot.commands.LowerIntakeCommand;
-import org.usfirst.frc.team7043.robot.commands.RaiseIntakeCommand;
-import org.usfirst.frc.team7043.robot.commands.TankDriveCommand;
+import org.usfirst.frc.team7043.robot.commands.IntakeCommand;
+import org.usfirst.frc.team7043.robot.commands.PullyCommand;
+import org.usfirst.frc.team7043.robot.commands.DriveCommand;
 import org.usfirst.frc.team7043.robot.subsystems.DriveTrainSubsystem;
 import org.usfirst.frc.team7043.robot.subsystems.IntakeSubsystem;
+import org.usfirst.frc.team7043.robot.subsystems.PullySubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,12 +31,13 @@ import org.usfirst.frc.team7043.robot.subsystems.IntakeSubsystem;
 public class Robot extends TimedRobot {
 	public static final DriveTrainSubsystem DriveTrain = new DriveTrainSubsystem();
 	public static final IntakeSubsystem Intake = new IntakeSubsystem();
+	public static final PullySubsystem Pully = new PullySubsystem();
 	public static OI refOI = new OI();
 	public static RobotMap robotMap = new RobotMap();
 
 	
 	
-	Command driveTrainCommand = new TankDriveCommand();
+	Command driveTrainCommand = new DriveCommand();
 	
 	Command selectedAutonomousCommand;
 	SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -49,17 +48,17 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		autoChooser.addDefault("Right Auto Drive", new AutoRightDriveCommand());
+		//autoChooser.addDefault("Right Auto Drive", new AutoRightDriveCommand());
 		//autoChooser.addDefault("Middle Auto Drive", new AutoMiddleDriveCommand());
 		//autoChooser.addDefault("Left Auto Drive", new AutoLeftDriveCommand());
 		//chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", autoChooser);
 		RobotMap.leftDrive.setInverted(true);
 		RobotMap.robotDriveMain = new DifferentialDrive(RobotMap.leftDrive, RobotMap.rightDrive);
-		refOI.triggerLeft.whileHeld(new IntakePullCommand());
-		refOI.triggerRight.whileHeld(new IntakeReleaseCommand());
-		refOI.raiseIntake.whileHeld(new RaiseIntakeCommand());
-		refOI.lowerIntake.whileHeld(new LowerIntakeCommand());
+		refOI.intakeReverse.whileHeld(new IntakeCommand("pull"));
+		refOI.intakeForward.whileHeld(new IntakeCommand("release"));
+		refOI.raiseIntake.whileHeld(new PullyCommand("raise"));
+		refOI.lowerIntake.whileHeld(new PullyCommand("lower"));
 	}
 
 	/**

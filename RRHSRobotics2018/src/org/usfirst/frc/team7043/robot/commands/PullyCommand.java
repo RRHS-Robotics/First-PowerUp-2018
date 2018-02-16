@@ -1,17 +1,32 @@
 package org.usfirst.frc.team7043.robot.commands;
 
 import org.usfirst.frc.team7043.robot.Robot;
-
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class RaiseIntakeCommand extends Command {
+public class PullyCommand extends Command {
 
-    public RaiseIntakeCommand() {
+	private Double speed;
+	
+	//AutoMode Constructor
+    public PullyCommand(Double timeIn, Double speedIn) {
         // Use requires() here to declare subsystem dependencies
-    		requires(Robot.Intake);
+    		requires(Robot.Pully);
+    		setTimeout(timeIn);
+    		speed = speedIn;
+    }
+    
+    //TeleMode Constructor
+    public PullyCommand(String mode) {
+        // Use requires() here to declare subsystem dependencies
+    		requires(Robot.Pully);
+    		if(mode == "raise") {
+    			speed = 0.4;
+    		} else if(mode == "lower") {
+    			speed = -0.4;
+    		}
     }
 
     // Called just before this Command runs the first time
@@ -20,20 +35,22 @@ public class RaiseIntakeCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    		Robot.Intake.activatePulley(0.1);
+    		Robot.Pully.activatePulley(speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return isTimedOut();
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    		Robot.Pully.stopPulley();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    		Robot.Pully.stopPulley();
     }
 }
