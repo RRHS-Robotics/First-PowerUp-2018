@@ -1,6 +1,8 @@
 package org.usfirst.frc.team7043.robot.commands;
 
 import org.usfirst.frc.team7043.robot.Robot;
+
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -11,6 +13,8 @@ public class DriveCommand extends Command {
 	
 	private Double speed;
 	private Double rotation;
+	
+	Preferences prefs = Preferences.getInstance();
 	
 	//AutoMode Constructor
     public DriveCommand(Double timeIn, Double speedIn, Double rotationIn) {
@@ -37,7 +41,7 @@ public class DriveCommand extends Command {
     		if(speed != null) {
     			Robot.DriveTrain.drive(speed, rotation);
     		} else {
-    			Robot.DriveTrain.drive(-Robot.refOI.controller.getY(Hand.kLeft), Robot.refOI.controller.getX(Hand.kLeft));
+    			Robot.DriveTrain.drive(-Robot.refOI.controller.getY(Hand.kLeft)*prefs.getDouble("Percent of Max Speed (0.0 to 1.0)", 1.0), Robot.refOI.controller.getX(Hand.kLeft)*prefs.getDouble("Percent of Max Speed (0.0 to 1.0)", 1.0));
     		}
     }
 

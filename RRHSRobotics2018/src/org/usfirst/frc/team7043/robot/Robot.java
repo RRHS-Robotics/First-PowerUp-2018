@@ -7,6 +7,11 @@
 
 package org.usfirst.frc.team7043.robot;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -16,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team7043.robot.commands.IntakeCommand;
 import org.usfirst.frc.team7043.robot.commands.PullyCommand;
+import org.usfirst.frc.team7043.robot.commands.AutoModeCommandGroup;
 import org.usfirst.frc.team7043.robot.commands.DriveCommand;
 import org.usfirst.frc.team7043.robot.subsystems.DriveTrainSubsystem;
 import org.usfirst.frc.team7043.robot.subsystems.IntakeSubsystem;
@@ -34,8 +40,19 @@ public class Robot extends TimedRobot {
 	public static final PullySubsystem Pully = new PullySubsystem();
 	public static OI refOI = new OI();
 	public static RobotMap robotMap = new RobotMap();
+	public Double ratio;
+	public Double autoPullyUpSpeed;
+	public Double autoPullyDownSpeed;
+	public Double autoIntakeInSpeed;
+	public Double autoIntakeOutSpeed;
 
+	public Preferences prefs;
 	
+	public UsbCamera topCamera;
+	public UsbCamera intakeCamera;
+	public VideoSink cameraServer;
+	public CvSink cvsink1;
+	public CvSink cvsink2;
 	
 	Command driveTrainCommand = new DriveCommand();
 	
@@ -48,15 +65,30 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		//autoChooser.addDefault("Right Auto Drive", new AutoRightDriveCommand());
-		//autoChooser.addDefault("Middle Auto Drive", new AutoMiddleDriveCommand());
-		//autoChooser.addDefault("Left Auto Drive", new AutoLeftDriveCommand());
-		//chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", autoChooser);
+		autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("right"));
+		SmartDashboard.putData("Auto Mode:", autoChooser);
+		
+		prefs = Preferences.getInstance();
+		ratio = prefs.getDouble("Percent of Max Speed (0.0 to 1.0)", 1.0);
+		autoPullyUpSpeed = prefs.getDouble("Speed of pully up: ", 0.4);
+		autoPullyDownSpeed = prefs.getDouble("Speed of pully down: ", -0.4);
+		autoIntakeInSpeed = prefs.getDouble("Speed of intake pull: ", 0.4);
+		autoIntakeOutSpeed = prefs.getDouble("Speed of intake release: ", -1.0);
+		
+		topCamera = CameraServer.getInstance().startAutomaticCapture(0);
+		intakeCamera = CameraServer.getInstance().startAutomaticCapture(1);
+		cameraServer = CameraServer.getInstance().getServer();
+		cvsink1 = new CvSink("IntakeCameraCV");
+		cvsink1.setSource(intakeCamera);
+		cvsink1.setEnabled(true);
+		cvsink2 = new CvSink("TopCameraCV");
+		cvsink2.setSource(topCamera);
+		cvsink2.setEnabled(true);
+		
 		RobotMap.leftDrive.setInverted(true);
 		RobotMap.robotDriveMain = new DifferentialDrive(RobotMap.leftDrive, RobotMap.rightDrive);
 		refOI.intakeReverse.whileHeld(new IntakeCommand("pull"));
-		refOI.intakeForward.whileHeld(new IntakeCommand("release"));
+		refOI.intakeForward.whileHeld(new IntakeCommand("release"));		
 		refOI.raiseIntake.whileHeld(new PullyCommand("raise"));
 		refOI.lowerIntake.whileHeld(new PullyCommand("lower"));
 	}
@@ -90,9 +122,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		selectedAutonomousCommand = autoChooser.getSelected();
-
-		RobotMap.masterTimer.reset();
-		RobotMap.masterTimer.start();
 		
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -134,6 +163,13 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		if (refOI.intakeCameraButton() && !refOI.topCameraButton()) {
+			SmartDashboard.putString("Info", "Setting Intake Camera");
+		    cameraServer.setSource(intakeCamera);
+		} else if (!refOI.intakeCameraButton() && refOI.topCameraButton()) {
+			SmartDashboard.putString("Info", "Setting Top Camera");
+		    cameraServer.setSource(topCamera);
+		}
 		Scheduler.getInstance().run();
 	}
 
