@@ -17,12 +17,20 @@ public class IntakeSubsystem extends Subsystem {
         //setDefaultCommand(new MySpecialCommand());
     }
     
-    public void recieve() {
-    		RobotMap.rollerIntake.set(1.0);
+    public void activateIntake(double speed) {
+    		RobotMap.rollerIntake.set(speed);
     }
     
-    public void release() {
-    		RobotMap.rollerIntake.set(-1.0);
+    public void activatePulley(double speed) {
+		RobotMap.pulleyMotor.set(speed);
     }
+    
+    public void stopIntake() {
+		RobotMap.rollerIntake.set(0);
+	}
+	
+	public void stopPulley() {
+		RobotMap.pulleyMotor.set(0);
+	}
 }
 

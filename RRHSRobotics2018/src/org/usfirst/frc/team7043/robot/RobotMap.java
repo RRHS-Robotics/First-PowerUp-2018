@@ -41,8 +41,15 @@ public class RobotMap {
 	public static SpeedControllerGroup rollerIntake = new SpeedControllerGroup(leftIntakeMotor,rightIntakeMotor);
 	//END Intake Motor Map
 	
-	//Start Pully System Map
-	public static Spark pullyMotor = new Spark(2);
+	//Start Pulley System Map
+	public static Spark pulleyMotor = new Spark(2); //PWM Pin group 2 on RoboRio
+	//End Pulley System Map
+	
+	//Start Insulting Children
+	//Kylie is a loser
+	//Eric is only here to model stuff
+	//Will is not actually swedish
+	//End Insulting Children
 	
 	
 }
