@@ -66,6 +66,14 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("right"));
+		autoChooser.addDefault("Left Auto Drive", new AutoModeCommandGroup("left"));
+		//autoChooser.addDefault("Mid Right Auto Drive", new AutoModeCommandGroup("midRight"));
+		//autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("midLeft"));
+		autoChooser.addDefault("Right Auto Block Drive", new AutoModeCommandGroup("rightBlock"));
+		autoChooser.addDefault("Left Auto Block Drive", new AutoModeCommandGroup("leftBlock"));
+	//	autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("midRightBlock"));
+	//	autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("midLeftBlock"));
+		
 		SmartDashboard.putData("Auto Mode:", autoChooser);
 		
 		prefs = Preferences.getInstance();

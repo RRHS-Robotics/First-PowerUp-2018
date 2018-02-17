@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  * PullyCommand(Double time, Double speed)
  * 	- time is in seconds
  * 	- speed is between -1.0 (full lower rate) and 1.0 (full raise rate)
- * TankDriveCommand(Double time, Double speed, Double rotation)
+ * DriveCommand(Double time, Double speed, Double rotation)
  * 	- time is in seconds
  * 	- speed is between -1.0 (full reverse) and 1.0 (full forward)
  * 	- rotation is between -1.0 (full left turn rate) and 1.0 (full right turn rate)
@@ -69,43 +69,74 @@ public class AutoModeCommandGroup extends CommandGroup {
     
     //Right Auto Drive
     private void right() {
-    		// Add Commands here:
-    	
+    		addParallel(new PullyCommand(2.9, 0.1));
+    		addSequential(new DriveCommand(0.1, 0.25,0.0));
+    		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+    		addSequential(new DriveCommand(1.2, 1.0, 0.0));
+    		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+    		addSequential(new DriveCommand(0.1, 0.25, 0.0));
+    		
     }
 
     //Left Auto Drive
     private void left() {
-    		// Add Commands here:
-    	
+    		addParallel(new PullyCommand(2.9, 0.1));
+		addSequential(new DriveCommand(0.1, 0.25,0.0));
+		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+		addSequential(new DriveCommand(1.2, 1.0, 0.0));
+		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+		addSequential(new DriveCommand(0.1, 0.25, 0.0));
     }
 
     //Right Auto Drive
     private void midRight() {
-    		// Add Commands here:
+    		addSequential(new DriveCommand(2.0, 0.5, 0.5));
     	
     }
 
     //Right Auto Drive
     private void midLeft() {
-    		// Add Commands here:
+    		addSequential(new DriveCommand(2.0, 0.5, 0.5));
     	
     }
 
     //Right Auto Drive w/ Block
     private void rightBlock() {
-    		// Add Commands here:
-    	
+    		addParallel(new IntakeCommand(8.6, 0.1));
+    		addParallel(new PullyCommand(11.0, 0.2));
+		addSequential(new DriveCommand(0.6, 0.25, 0.0));
+		addSequential(new DriveCommand(5.0, 0.5, 0.0));
+		addSequential(new DriveCommand(0.6, 0.25, 0.0));
+		addSequential(new DriveCommand(1.2, 0.1, -0.5));//this ~90 degrees right
+		addSequential(new IntakeCommand(0.6, -1.0));
+    
+    	/* OG CODE SAVE
+    		addParallel(new PullyCommand(2.7, 0.1));
+		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+		addSequential(new DriveCommand(1.0, 1.0, 0.0));
+		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+		addSequential(new DriveCommand(0.2, 0.2, -1.0));//this ~90 degrees right
+		addSequential(new IntakeCommand(0.4, -1.0));
+  */
     }
 
     //Left Auto Drive w/ Block
     private void leftBlock() {
-    		// Add Commands here:
+    		addParallel(new PullyCommand(2.7, 0.1));
+		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+		addSequential(new DriveCommand(1.2, 1.0, 0.0));
+		addSequential(new DriveCommand(0.2, 0.5, 0.0));
+		addSequential(new DriveCommand(0.2, -0.2, 1.0));//this ~90 degrees right
+		addSequential(new IntakeCommand(0.4, -1.0));    	
+
     	
     }
 
     //Mid Right Auto Drive w/ Block
     private void midRightBlock() {
-    		// Add Commands here:
+    		addParallel(new IntakeCommand(6.0,0.5));
+    		addSequential(new DriveCommand(2.0, 0.5, 0.5));
+    		//addParallel(new DriveCommand())
     	
     }
 
