@@ -1,6 +1,8 @@
 package org.usfirst.frc.team7043.robot.commands;
 
 import org.usfirst.frc.team7043.robot.Robot;
+
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -9,6 +11,8 @@ import edu.wpi.first.wpilibj.command.Command;
 public class PullyCommand extends Command {
 
 	private Double speed;
+	
+	Preferences prefs = Preferences.getInstance();
 	
 	//AutoMode Constructor
     public PullyCommand(Double timeIn, Double speedIn) {
@@ -23,9 +27,9 @@ public class PullyCommand extends Command {
         // Use requires() here to declare subsystem dependencies
     		requires(Robot.Pully);
     		if(mode == "raise") {
-    			speed = 0.4;
+    			speed = prefs.getDouble("Speed of pully up: ", 0.4);
     		} else if(mode == "lower") {
-    			speed = -0.4;
+    			speed = prefs.getDouble("Speed of pully down: ", -0.4);
     		}
     }
 

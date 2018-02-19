@@ -11,6 +11,7 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -40,11 +41,8 @@ public class Robot extends TimedRobot {
 	public static final PullySubsystem Pully = new PullySubsystem();
 	public static OI refOI = new OI();
 	public static RobotMap robotMap = new RobotMap();
-	public Double ratio;
-	public Double autoPullyUpSpeed;
-	public Double autoPullyDownSpeed;
-	public Double autoIntakeInSpeed;
-	public Double autoIntakeOutSpeed;
+	
+	public Boolean DEBUG;
 
 	public Preferences prefs;
 	
@@ -57,7 +55,8 @@ public class Robot extends TimedRobot {
 	Command driveTrainCommand = new DriveCommand();
 	
 	Command selectedAutonomousCommand;
-	SendableChooser<Command> autoChooser = new SendableChooser<>();
+	SendableChooser<String> autoChooser = new SendableChooser<>();
+	SendableChooser<Command> autoChooserDebug = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -65,23 +64,27 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("right"));
-		autoChooser.addDefault("Left Auto Drive", new AutoModeCommandGroup("left"));
-		//autoChooser.addDefault("Mid Right Auto Drive", new AutoModeCommandGroup("midRight"));
-		//autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("midLeft"));
-		autoChooser.addDefault("Right Auto Block Drive", new AutoModeCommandGroup("rightBlock"));
-		autoChooser.addDefault("Left Auto Block Drive", new AutoModeCommandGroup("leftBlock"));
-	//	autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("midRightBlock"));
-	//	autoChooser.addDefault("Right Auto Drive", new AutoModeCommandGroup("midLeftBlock"));
-		
-		SmartDashboard.putData("Auto Mode:", autoChooser);
-		
 		prefs = Preferences.getInstance();
-		ratio = prefs.getDouble("Percent of Max Speed (0.0 to 1.0)", 1.0);
-		autoPullyUpSpeed = prefs.getDouble("Speed of pully up: ", 0.4);
-		autoPullyDownSpeed = prefs.getDouble("Speed of pully down: ", -0.4);
-		autoIntakeInSpeed = prefs.getDouble("Speed of intake pull: ", 0.4);
-		autoIntakeOutSpeed = prefs.getDouble("Speed of intake release: ", -1.0);
+		DEBUG = prefs.getBoolean("DEBUG", false);
+		
+		if(DEBUG) {
+			autoChooserDebug.addDefault("Right Auto Drive", new AutoModeCommandGroup("right"));
+			autoChooserDebug.addDefault("Left Auto Drive", new AutoModeCommandGroup("left"));
+			//autoChooserDebug.addDefault("Mid Right Auto Drive", new AutoModeCommandGroup("midRight"));
+			//autoChooserDebug.addDefault("Right Auto Drive", new AutoModeCommandGroup("midLeft"));
+			autoChooserDebug.addDefault("Right Auto Block Drive", new AutoModeCommandGroup("rightBlock"));
+			autoChooserDebug.addDefault("Left Auto Block Drive", new AutoModeCommandGroup("leftBlock"));
+		//	autoChooserDebug.addDefault("Right Auto Drive", new AutoModeCommandGroup("midRightBlock"));
+		//	autoChooserDebug.addDefault("Right Auto Drive", new AutoModeCommandGroup("midLeftBlock"));
+			
+			SmartDashboard.putData("Auto Mode (Debug):", autoChooserDebug);
+		} else {
+			autoChooser.addDefault("Right Auto Drive", "right");
+			autoChooser.addDefault("Left Auto Drive", "left");
+			autoChooser.addDefault("Middle Auto Drive", "mid");
+			
+			SmartDashboard.putData("Auto Mode:", autoChooser);
+		}
 		
 		topCamera = CameraServer.getInstance().startAutomaticCapture(0);
 		intakeCamera = CameraServer.getInstance().startAutomaticCapture(1);
@@ -129,7 +132,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		selectedAutonomousCommand = autoChooser.getSelected();
+		String autoType = autoChooser.getSelected();
 		
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -137,7 +140,33 @@ public class Robot extends TimedRobot {
 		 * = new MyAutoCommand(); break; case "Default Auto": default:
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
+		
+		if(DEBUG) {
+			selectedAutonomousCommand = autoChooserDebug.getSelected();
+		} else {
+			String gameData;
+			gameData = DriverStation.getInstance().getGameSpecificMessage();
+	        if(gameData.length() > 0)
+	        {
+			    if(gameData.charAt(0) == 'L' && (autoType == "left" || autoType == "mid"))
+			    	{
+			    		//Put left auto code here
+			    		if(autoType == "mid") {
+			    			autoType += "Left";
+			    		}
+			    		selectedAutonomousCommand = new AutoModeCommandGroup(autoType + "Block");
+			    	} else {
+			    		//Put right auto code here
+			    		if(autoType == "mid") {
+			    			autoType += "Right";
+			    		}
+			    		selectedAutonomousCommand = new AutoModeCommandGroup(autoType);
+			    	}
+	        }
+		}
 
+		
+		
 		// schedule the autonomous command (example)
 		if (selectedAutonomousCommand != null) {
 			selectedAutonomousCommand.start();

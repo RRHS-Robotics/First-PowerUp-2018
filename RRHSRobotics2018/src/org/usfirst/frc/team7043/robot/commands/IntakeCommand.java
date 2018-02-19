@@ -1,6 +1,8 @@
 package org.usfirst.frc.team7043.robot.commands;
 
 import org.usfirst.frc.team7043.robot.Robot;
+
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -9,6 +11,8 @@ import edu.wpi.first.wpilibj.command.Command;
 public class IntakeCommand extends Command {
 	
 	private Double speed;
+	
+	Preferences prefs = Preferences.getInstance();
 	
 	//AutoMode Constructor
     public IntakeCommand(Double timeIn, Double speedIn) {
@@ -23,9 +27,9 @@ public class IntakeCommand extends Command {
         // Use requires() here to declare subsystem dependencies
     		requires(Robot.Intake);
     		if(mode == "release") {
-    			speed = -1.0;
+    			speed = prefs.getDouble("Speed of intake release: ", -1.0);
     		} else if(mode == "pull") {
-    			speed = 0.4;
+    			speed = prefs.getDouble("Speed of intake pull: ", 0.4);
     		}
     }
 

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team7043.robot.commands;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
@@ -38,6 +39,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class AutoModeCommandGroup extends CommandGroup {
 
+	Preferences prefs = Preferences.getInstance();
+	
     public AutoModeCommandGroup(String path) {
     		switch(path) {
     			case "right":	
@@ -69,6 +72,7 @@ public class AutoModeCommandGroup extends CommandGroup {
     
     //Right Auto Drive
     private void right() {
+    		//prefs.getDouble("<Description>", value);
     		addParallel(new PullyCommand(2.9, 0.1));
     		addSequential(new DriveCommand(0.1, 0.25,0.0));
     		addSequential(new DriveCommand(0.2, 0.5, 0.0));
